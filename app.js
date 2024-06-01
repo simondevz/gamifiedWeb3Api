@@ -3,6 +3,13 @@ const app = express();
 const NftMetadata = require("./model");
 
 app.use(express.json());
+
+app.use((req, res, next) => {
+  res.header(`Access-Control-Allow-Origin`, `*`);
+  res.header(`Access-Control-Allow-Methods`, `GET,PUT,POST,DELETE`);
+  next();
+});
+
 // API endpoint to store NFT metadata
 app.post("/nft-metadata", async (req, res) => {
   const tokenId = req.body?.tokenId;
