@@ -1,28 +1,30 @@
 const app = require("express")();
-
-// In-memory storage for NFT metadata (you can replace this with a database)
-const nftMetadata = {};
+const NftMetadata = require("./model");
 
 // API endpoint to store NFT metadata
-app.post("/nft-metadata", (req, res) => {
+app.post("/nft-metadata", async (req, res) => {
   const { tokenId, metadata } = req.body;
-  nftMetadata[tokenId] = metadata;
-  res.send(`NFT metadata stored for token ID ${tokenId}`);
-});
-
-// API endpoint to retrieve NFT metadata
-app.get("/nft-metadata/:tokenId", (req, res) => {
-  const tokenId = req.params.tokenId;
-  const metadata = nftMetadata[tokenId];
-  if (!metadata) {
-    res.status(404).send(`NFT metadata not found for token ID ${tokenId}`);
-  } else {
-    res.send(metadata);
+  const newNftMetadata = new NftMetadata({ tokenId, metadata });
+  try {
+    const savedNftMetadata = await newNftMetadata.save();
+    res.status(201).json(savedNftMetadata);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
 });
 
-app.listen(port, () => {
-  console.log(`API listening on port ${port}`);
+// API endpoint to retrieve NFT metadata
+app.get("/nft-metadata/:tokenId", async (req, res) => {
+  const tokenId = req.params.tokenId;
+  try {
+    const nftMetadata = await NftMetadata.findOne({ tokenId });
+    if (!nftMetadata) {
+      return res.status(404).json({ message: "NFT metadata not found" });
+    }
+    res.json(nftMetadata.metadata);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
 
 const port = 3000;
