@@ -1,9 +1,13 @@
-const app = require("express")();
+const express = require("express");
+const app = express();
 const NftMetadata = require("./model");
 
+app.use(express.json());
 // API endpoint to store NFT metadata
 app.post("/nft-metadata", async (req, res) => {
-  const { tokenId, metadata } = req.body;
+  const tokenId = req.body?.tokenId;
+  const metadata = req.body?.metadata;
+  console.log(tokenId, metadata, req.body);
   const newNftMetadata = new NftMetadata({ tokenId, metadata });
   try {
     const savedNftMetadata = await newNftMetadata.save();
