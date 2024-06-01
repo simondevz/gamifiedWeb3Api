@@ -1,6 +1,13 @@
 // models/nftMetadata.js
 
 const mongoose = require("mongoose");
+require("dotenv").config();
+
+mongoose.connect(process.env.DATABASE_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  connectTimeoutMS: 30000, // Increase the timeout limit to 30 seconds
+});
 
 const nftMetadataSchema = new mongoose.Schema({
   tokenId: {
