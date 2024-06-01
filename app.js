@@ -13,8 +13,8 @@ app.use((req, res, next) => {
 
 // API endpoint to store NFT metadata
 app.post("/nft-metadata", async (req, res) => {
-  const tokenId = req.body?.tokenId;
-  const metadata = req.body?.metadata;
+  const tokenId = req.body?.data?.tokenId;
+  const metadata = req.body?.data?.metadata;
   console.log(tokenId, metadata, req.body);
   const newNftMetadata = new NftMetadata({ tokenId, metadata });
   try {
